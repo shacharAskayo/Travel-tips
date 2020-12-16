@@ -26,7 +26,7 @@ window.onload = () => {
         .then(() => {
             addMarker({ lat: 32.0749831, lng: 34.9120554 });
         })
-        .catch(console.log('INIT MAP ERROR'));
+        .catch(err => console.log('INIT MAP ERROR', err));
 
     getUserPosition()
         .then(pos => {
@@ -36,7 +36,7 @@ window.onload = () => {
 
         .then(userPos => {
             document.querySelector('.btn-2').addEventListener('click', () => {
-                gGoogleMap.panTo(userPos.latitude, userPos.longitude)
+                panTo(userPos.latitude, userPos.longitude)
             })
         })
         .catch(err => {
@@ -48,6 +48,21 @@ window.onload = () => {
     document.querySelector('.btn').addEventListener('click', (ev) => {
         console.log('Aha!', ev.target);
         panTo(60, 20);
+    })
+
+    document.querySelector('.search-bar').addEventListener('onkeyup', (ev) => {
+        if (ev.keyCode === 13) onSearchLocation()
+    })
+
+    document.querySelector('.search-btn').addEventListener('click', () => {
+        onSearchLocation()
+    })
+
+    document.querySelector('.btn-3').addEventListener('click', (ev) => {
+        var text = `${window.location.href}?lat=${gGoogleMap.center.lat()}&lng=${gGoogleMap.center.lng()}`
+        navigator.clipboard.writeText(text)
+            .then(() => alert('copied'))
+            .catch(err => console.error('Async: Could not copy text: ', err))
     })
 
 }
@@ -157,5 +172,10 @@ function _connectGoogleApi() {
         elGoogleApi.onerror = () => reject('Google script failed to load')
     })
 
+}
 
+
+function onSearchLocation() {
+    var inputVal = document.querySelector('.search-bar').value
+    locationService.searchLocation(inputVal)
 }
