@@ -1,19 +1,23 @@
 export const locationService = {
     getLocations,
     saveLocation,
-    searchLocation
+    searchLocation,
+    removeFromStorage
+
 
 }
 
-
 const gLocations = [];
 
+function removeFromStorage(idx) {
+    gLocations.splice(idx, 1)
+}
 
 function getLocations() {
     return Promise.resolve(gLocations)
 }
 
-function saveLocation(location){
+function saveLocation(location) {
     gLocations.push(location)
 
 }
@@ -24,7 +28,13 @@ function searchLocation(location) {
     return fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=${API_KEY}`)
         .then((res) => res.json())
         .then((res) => {
-            console.log('Service got location:', res);
+            console.log('Service got location:', res)
+            return res;
         })
+        .then((res) => {
+            if (!res.results) return null
+            return res.results[0].geometry.location
+        })
+
         .catch((err) => { console.log('Problem:', err) })
 }
