@@ -11,8 +11,7 @@ const KEY = 'locations'
 var gIdCounter = 101
 
 locationService.getLocations()
-    .then(location => {
-    })
+    .then(location => {})
 
 
 // .then(location => console.log(location))
@@ -34,7 +33,7 @@ window.onload = () => {
             return pos.coords
         })
 
-        .then(userPos => {
+    .then(userPos => {
             document.querySelector('.btn-2').addEventListener('click', () => {
                 panTo(userPos.latitude, userPos.longitude)
             })
@@ -51,7 +50,8 @@ window.onload = () => {
     })
 
     document.querySelector('.search-bar').addEventListener('onkeyup', (ev) => {
-        if (ev.keyCode === 13) onSearchLocation()
+        console.log(ev)
+        if (ev.key === 'Enter') onSearchLocation()
     })
 
     document.querySelector('.search-btn').addEventListener('click', () => {
@@ -73,9 +73,9 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
         .then(() => {
             gGoogleMap = new google.maps.Map(
                 document.querySelector('#map'), {
-                center: { lat, lng },
-                zoom: 15
-            })
+                    center: { lat, lng },
+                    zoom: 15
+                })
             gGoogleMap.addListener('click', (ev) => {
                 const placeName = prompt('name that place')
                 const lat = ev.latLng.lat()
@@ -105,7 +105,7 @@ function renderPlaces() {
     var strHTMLs = places.map((place, idx) => `<li class="place-${idx}" style="cursor:pointer">${place.name}  <span >X</span></li> `)
     strHTMLs.unshift('<ul>')
     strHTMLs.push('</ul>')
-    // strHTML += `</ul>`
+        // strHTML += `</ul>`
     var userFavs = document.querySelector('.user-places')
     userFavs.innerHTML = strHTMLs.join('')
     renderListClicks(places)
@@ -113,7 +113,7 @@ function renderPlaces() {
 
 function renderListClicks(places) {
     console.log(places)
-    for (var i = 0; i < places.length;  i++) {
+    for (var i = 0; i < places.length; i++) {
         let idx = i
         document.querySelector(`.place-${i}`).addEventListener('click', (ev) => {
             console.log(idx)
@@ -178,4 +178,8 @@ function _connectGoogleApi() {
 function onSearchLocation() {
     var inputVal = document.querySelector('.search-bar').value
     locationService.searchLocation(inputVal)
+        .then(loc => {
+            if (!loc) alert('location was not found')
+            panTo(loc.lat, loc.lng)
+        })
 }
