@@ -47,8 +47,9 @@ window.onload = () => {
         panTo(60, 20);
     })
 
-    document.querySelector('.search-bar').addEventListener('onkeyup', (ev) => {
-        if (ev.keyCode === 13) onSearchLocation()
+    document.querySelector('.search-bar').addEventListener('keyup', (ev) => {
+        console.log(ev)
+        if (ev.keyCode === 'enter') onSearchLocation()
     })
 
     document.querySelector('.search-btn').addEventListener('click', () => {
