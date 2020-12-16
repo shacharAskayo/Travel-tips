@@ -64,6 +64,8 @@ function getUserPosition() {
 }
 
 
+
+
 function _connectGoogleApi() {
     if (window.google) return Promise.resolve()
     const API_KEY = ''; //TODO: Enter your API Key
