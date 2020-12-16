@@ -13,7 +13,6 @@ var gIdCounter = 101
 
 
 
-
 var gGoogleMap;
 var userPos
 window.onload = () => {
@@ -31,7 +30,7 @@ window.onload = () => {
             return pos.coords
         })
 
-        .then(userPos => {
+    .then(userPos => {
             document.querySelector('.btn-2').addEventListener('click', () => {
                 panTo(userPos.latitude, userPos.longitude)
             })
@@ -49,7 +48,7 @@ window.onload = () => {
 
     document.querySelector('.search-bar').addEventListener('keyup', (ev) => {
         console.log(ev)
-        if (ev.keyCode === 'enter') onSearchLocation()
+        if (ev.key === 'enter') onSearchLocation()
     })
 
     document.querySelector('.search-btn').addEventListener('click', () => {
@@ -112,7 +111,7 @@ function renderPlaces() {
 
 function renderListClicks(places) {
     console.log(places)
-    for (var i = 0; i < places.length;  i++) {
+    for (var i = 0; i < places.length; i++) {
         let idx = i
         document.querySelector(`.place-${i}`).addEventListener('click', (ev) => {
             console.log(idx)
@@ -184,4 +183,8 @@ function _connectGoogleApi() {
 function onSearchLocation() {
     var inputVal = document.querySelector('.search-bar').value
     locationService.searchLocation(inputVal)
+        .then(loc => {
+            if (!loc) alert('location was not found')
+            panTo(loc.lat, loc.lng)
+        })
 }
