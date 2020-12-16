@@ -4,7 +4,7 @@ import { locationService } from './services/location-service.js'
 console.log('locationService', locationService);
 
 var gGoogleMap;
-
+var userPos
 window.onload = () => {
     initMap()
         .then(() => {
@@ -14,7 +14,13 @@ window.onload = () => {
 
     getUserPosition()
         .then(pos => {
-            console.log('User position is:', pos.coords);
+            userPos = pos.coords
+            return pos.coords
+        })
+        .then(userPos => {
+            document.querySelector('.btn-2').addEventListener('click', () => {
+                gGoogleMap.panTo(userPos.latitude, userPos.longitude)
+            })
         })
         .catch(err => {
             console.log('err!!!', err);
@@ -24,6 +30,7 @@ window.onload = () => {
         console.log('Aha!', ev.target);
         panTo(35.6895, 139.6917);
     })
+
 }
 
 
@@ -55,15 +62,14 @@ function panTo(lat, lng) {
     gGoogleMap.panTo(laLatLng);
 }
 
+
+
 function getUserPosition() {
     console.log('Getting Pos');
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject)
     })
 }
-
-
-
 
 function _connectGoogleApi() {
     if (window.google) return Promise.resolve()
