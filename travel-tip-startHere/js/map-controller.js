@@ -1,11 +1,27 @@
 import { locationService } from './services/location-service.js'
 
 
-console.log('locationService', locationService);
+// export const mapController = {
+//     initMap,
+//     _connectGoogleApi,
+//     gGoogleMap
+// }
+const KEY = 'locations'
+
+var gIdCounter = 101
+
+locationService.getLocations()
+    .then(location => {
+    })
+
+
+// .then(location => console.log(location))
+
 
 var gGoogleMap;
 var userPos
 window.onload = () => {
+    // renderPlaces()
     initMap()
         .then(() => {
             addMarker({ lat: 32.0749831, lng: 34.9120554 });
@@ -17,6 +33,7 @@ window.onload = () => {
             userPos = pos.coords
             return pos.coords
         })
+
         .then(userPos => {
             document.querySelector('.btn-2').addEventListener('click', () => {
                 gGoogleMap.panTo(userPos.latitude, userPos.longitude)
@@ -26,27 +43,84 @@ window.onload = () => {
             console.log('err!!!', err);
         })
 
+
+
     document.querySelector('.btn').addEventListener('click', (ev) => {
         console.log('Aha!', ev.target);
-        panTo(35.6895, 139.6917);
+        panTo(60, 20);
     })
 
 }
 
 
 export function initMap(lat = 32.0749831, lng = 34.9120554) {
-    console.log('InitMap');
     return _connectGoogleApi()
         .then(() => {
-            console.log('google available');
             gGoogleMap = new google.maps.Map(
                 document.querySelector('#map'), {
-                    center: { lat, lng },
-                    zoom: 15
-                })
-            console.log('Map!', gGoogleMap);
+                center: { lat, lng },
+                zoom: 15
+            })
+            gGoogleMap.addListener('click', (ev) => {
+                const placeName = prompt('name that place')
+                const lat = ev.latLng.lat()
+                const lng = ev.latLng.lng()
+                var currTime = Date.now()
+                locationService.getLocations()
+                    .then(locations => {
+                        // locations.push(createLocation(placeName,lat,lng,currTime))
+                        // console.log(locations)
+                        locationService.saveLocation(createLocation(placeName, lat, lng, currTime))
+                        saveToStorage(KEY, locations)
+                        renderPlaces()
+                    })
+
+
+            })
         })
 }
+
+
+
+
+
+function renderPlaces() {
+    if (!loadFromStorage(KEY)) return
+    var places = loadFromStorage(KEY)
+    var strHTMLs = places.map((place, idx) => `<li class="place-${idx}" style="cursor:pointer">${place.name}  <span >X</span></li> `)
+    strHTMLs.unshift('<ul>')
+    strHTMLs.push('</ul>')
+    // strHTML += `</ul>`
+    var userFavs = document.querySelector('.user-places')
+    userFavs.innerHTML = strHTMLs.join('')
+    renderListClicks(places)
+}
+
+function renderListClicks(places) {
+    console.log(places)
+    for (var i = 0; i < places.length;  i++) {
+        let idx = i
+        document.querySelector(`.place-${i}`).addEventListener('click', (ev) => {
+            console.log(idx)
+            panTo(places[idx].lat, places[idx].lng)
+        })
+    }
+}
+
+
+function createLocation(name, lat, lng, weather = 17, createdAt, updateAt = 0) {
+    gIdCounter++
+    return {
+        id: gIdCounter,
+        name,
+        lat,
+        lng,
+        weather,
+        createdAt,
+        updateAt
+    }
+}
+
 
 function addMarker(loc) {
     var marker = new google.maps.Marker({
@@ -65,7 +139,6 @@ function panTo(lat, lng) {
 
 
 function getUserPosition() {
-    console.log('Getting Pos');
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject)
     })
