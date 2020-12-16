@@ -10,18 +10,15 @@ const KEY = 'locations'
 
 var gIdCounter = 101
 
-locationService.getLocations()
-    .then(location => {
-    })
 
 
-// .then(location => console.log(location))
 
 
 var gGoogleMap;
 var userPos
 window.onload = () => {
-    // renderPlaces()
+    renderPlaces()
+    
     initMap()
         .then(() => {
             addMarker({ lat: 32.0749831, lng: 34.9120554 });
@@ -74,10 +71,12 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
             gGoogleMap = new google.maps.Map(
                 document.querySelector('#map'), {
                 center: { lat, lng },
-                zoom: 15
+                zoom: 8
             })
             gGoogleMap.addListener('click', (ev) => {
                 const placeName = prompt('name that place')
+                if(!placeName) return
+              
                 const lat = ev.latLng.lat()
                 const lng = ev.latLng.lng()
                 var currTime = Date.now()
@@ -100,12 +99,11 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
 
 
 function renderPlaces() {
-    if (!loadFromStorage(KEY)) return
-    var places = loadFromStorage(KEY)
-    var strHTMLs = places.map((place, idx) => `<li class="place-${idx}" style="cursor:pointer">${place.name}  <span >X</span></li> `)
+    const places = loadFromStorage(KEY)
+    if (!places || !places.length) return
+    var strHTMLs = places.map((place, idx) => `<li  style="cursor:pointer"> <span class="place-${idx}"> ${(place.name)} </span><span class="remove-${idx}"> X</span></li> `)
     strHTMLs.unshift('<ul>')
     strHTMLs.push('</ul>')
-    // strHTML += `</ul>`
     var userFavs = document.querySelector('.user-places')
     userFavs.innerHTML = strHTMLs.join('')
     renderListClicks(places)
@@ -118,6 +116,12 @@ function renderListClicks(places) {
         document.querySelector(`.place-${i}`).addEventListener('click', (ev) => {
             console.log(idx)
             panTo(places[idx].lat, places[idx].lng)
+        })
+        document.querySelector(`.remove-${idx}`).addEventListener('click', ()=> {
+            places.splice(idx,1)
+            saveToStorage(KEY,places)
+            locationService.removeFromStorage(idx)
+            renderPlaces()
         })
     }
 }
@@ -149,6 +153,7 @@ function addMarker(loc) {
 function panTo(lat, lng) {
     var laLatLng = new google.maps.LatLng(lat, lng);
     gGoogleMap.panTo(laLatLng);
+    gGoogleMap.zoom =13
 }
 
 
