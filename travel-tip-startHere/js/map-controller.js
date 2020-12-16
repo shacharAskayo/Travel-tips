@@ -10,7 +10,7 @@ window.onload = () => {
         .then(() => {
             addMarker({ lat: 32.0749831, lng: 34.9120554 });
         })
-        .catch(console.log('INIT MAP ERROR'));
+        .catch(err => console.log('INIT MAP ERROR', err));
 
     getUserPosition()
         .then(pos => {
@@ -19,7 +19,7 @@ window.onload = () => {
         })
         .then(userPos => {
             document.querySelector('.btn-2').addEventListener('click', () => {
-                gGoogleMap.panTo(userPos.latitude, userPos.longitude)
+                panTo(userPos.latitude, userPos.longitude)
             })
         })
         .catch(err => {
@@ -31,12 +31,19 @@ window.onload = () => {
         panTo(35.6895, 139.6917);
     })
 
-    document.querySelector('.search-bar').addEventListener('onkeyup', () => {
-        if (event.keyCode === 13) onSearchLocation()
+    document.querySelector('.search-bar').addEventListener('onkeyup', (ev) => {
+        if (ev.keyCode === 13) onSearchLocation()
     })
 
     document.querySelector('.search-btn').addEventListener('click', () => {
         onSearchLocation()
+    })
+
+    document.querySelector('.btn-3').addEventListener('click', (ev) => {
+        var text = `${window.location.href}?lat=${gGoogleMap.center.lat()}&lng=${gGoogleMap.center.lng()}`
+        navigator.clipboard.writeText(text)
+            .then(() => alert('copied'))
+            .catch(err => console.error('Async: Could not copy text: ', err))
     })
 
 }
@@ -99,14 +106,3 @@ function onSearchLocation() {
     var inputVal = document.querySelector('.search-bar').value
     locationService.searchLocation(inputVal)
 }
-
-
-// function searchLocation(location) {
-//     const API_KEY = 'AIzaSyDLZcYhiN4d0Vkk1Ku1BBGR7UFiXr-2t4Y'
-//     return fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=${API_KEY}`)
-//         .then((res) => res.json())
-//         .then((res) => {
-//             console.log('Service got location:', res);
-//         })
-//         .catch((err) => { console.log('Problem:', err) })
-// }
