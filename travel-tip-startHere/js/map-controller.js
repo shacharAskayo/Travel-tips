@@ -10,7 +10,7 @@ window.onload = () => {
         .then(() => {
             addMarker({ lat: 32.0749831, lng: 34.9120554 });
         })
-        .catch(console.log('INIT MAP ERROR'));
+        .catch(err => console.log('INIT MAP ERROR', err));
 
     getUserPosition()
         .then(pos => {
@@ -19,7 +19,7 @@ window.onload = () => {
         })
         .then(userPos => {
             document.querySelector('.btn-2').addEventListener('click', () => {
-                gGoogleMap.panTo(userPos.latitude, userPos.longitude)
+                panTo(userPos.latitude, userPos.longitude)
             })
         })
         .catch(err => {
@@ -29,6 +29,13 @@ window.onload = () => {
     document.querySelector('.btn').addEventListener('click', (ev) => {
         console.log('Aha!', ev.target);
         panTo(35.6895, 139.6917);
+    })
+
+    document.querySelector('.btn-3').addEventListener('click', (ev) => {
+        var text = `${window.location.href}?lat=${gGoogleMap.center.lat()}&lng=${gGoogleMap.center.lng()}`
+        navigator.clipboard.writeText(text)
+            .then(() => alert('copied'))
+            .catch(err => console.error('Async: Could not copy text: ', err))
     })
 
 }
