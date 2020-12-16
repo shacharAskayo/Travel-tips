@@ -1,7 +1,7 @@
-import { locationService } from './services/location-service.js'
+
+import {locationService} from './services/location-service.js'
 
 
-console.log('locationService', locationService);
 
 var gGoogleMap;
 
@@ -26,18 +26,17 @@ window.onload = () => {
     })
 }
 
-
 export function initMap(lat = 32.0749831, lng = 34.9120554) {
-    console.log('InitMap');
+    // console.log('InitMap');
     return _connectGoogleApi()
-        .then(() => {
-            console.log('google available');
-            gGoogleMap = new google.maps.Map(
-                document.querySelector('#map'), {
-                    center: { lat, lng },
-                    zoom: 15
-                })
-            console.log('Map!', gGoogleMap);
+    
+    .then(() => {
+        gGoogleMap = new google.maps.Map(
+            document.querySelector('#map'), {
+                center: { lat, lng },
+                zoom: 15
+            })
+            // console.log('Map!', gGoogleMap);
         })
 }
 
@@ -52,11 +51,13 @@ function addMarker(loc) {
 
 function panTo(lat, lng) {
     var laLatLng = new google.maps.LatLng(lat, lng);
+    console.log(laLatLng)
     gGoogleMap.panTo(laLatLng);
+
 }
 
 function getUserPosition() {
-    console.log('Getting Pos');
+    // console.log('Getting Pos');
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject)
     })
@@ -66,8 +67,9 @@ function getUserPosition() {
 
 
 function _connectGoogleApi() {
+    // console.log(window.google)
     if (window.google) return Promise.resolve()
-    const API_KEY = 'AIzaSyDLZcYhiN4d0Vkk1Ku1BBGR7UFiXr-2t4Y'; //TODO: Enter your API Key
+    const API_KEY = ''; //TODO: Enter your API Key
     var elGoogleApi = document.createElement('script');
     elGoogleApi.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}`;
     elGoogleApi.async = true;
@@ -77,4 +79,9 @@ function _connectGoogleApi() {
         elGoogleApi.onload = resolve;
         elGoogleApi.onerror = () => reject('Google script failed to load')
     })
+    
+
 }
+
+
+
