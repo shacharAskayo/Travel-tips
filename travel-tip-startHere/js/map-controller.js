@@ -56,7 +56,7 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
             gGoogleMap = new google.maps.Map(
                 document.querySelector('#map'), {
                     center: { lat, lng },
-                    zoom: 8
+                    zoom: 15
                 })
             gGoogleMap.addListener('click', (ev) => {
                 const placeName = prompt('name that place')
@@ -67,8 +67,6 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
                 var currTime = Date.now()
                 locationService.getLocations()
                     .then(locations => {
-                        // locations.push(createLocation(placeName,lat,lng,currTime))
-                        // console.log(locations)
                         locationService.saveLocation(createLocation(placeName, lat, lng, currTime))
                         saveToStorage(KEY, locations)
                         renderPlaces()
@@ -85,24 +83,24 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
 
 function renderPlaces() {
     const places = loadFromStorage(KEY)
-    if (!places || !places.length) return
+    if (!places || !places.length) {
+        document.querySelector('.user-places').innerHTML = ''
+        return
+    }
     var strHTMLs = places.map((place, idx) => `<li  style="cursor:pointer"> <span class="place-${idx}"> ${(place.name)} </span><span class="remove-${idx}"> X</span></li> `)
     strHTMLs.unshift('<ul>')
     strHTMLs.push('</ul>')
-    var userFavs = document.querySelector('.user-places')
-    userFavs.innerHTML = strHTMLs.join('')
+    document.querySelector('.user-places').innerHTML = strHTMLs.join('')
     renderListClicks(places)
 }
 
 function renderListClicks(places) {
-    console.log(places)
     for (var i = 0; i < places.length; i++) {
         let idx = i
         document.querySelector(`.place-${i}`).addEventListener('click', (ev) => {
-            console.log(idx)
             panTo(places[idx].lat, places[idx].lng)
         })
-        document.querySelector(`.remove-${idx}`).addEventListener('click', () => {
+        document.querySelector(`.remove-${idx}`).addEventListener('click', (idx) => {
             places.splice(idx, 1)
             saveToStorage(KEY, places)
             locationService.removeFromStorage(idx)
@@ -137,8 +135,8 @@ function addMarker(loc) {
 
 function panTo(lat, lng) {
     var laLatLng = new google.maps.LatLng(lat, lng);
+    gGoogleMap.zoom = 15
     gGoogleMap.panTo(laLatLng);
-    gGoogleMap.zoom = 13
 }
 
 
@@ -169,7 +167,10 @@ function onSearchLocation() {
     var inputVal = document.querySelector('.search-bar').value
     locationService.searchLocation(inputVal)
         .then(loc => {
-            if (!loc) alert('location was not found')
+            if (!loc) {
+                alert('location was not found');
+                return
+            }
             panTo(loc.lat, loc.lng)
         })
 }
@@ -193,5 +194,4 @@ function getParameterByName(name, url = window.location.href) {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
-
 }

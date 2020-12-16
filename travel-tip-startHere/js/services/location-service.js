@@ -28,7 +28,6 @@ function searchLocation(location) {
     return fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=${API_KEY}`)
         .then((res) => res.json())
         .then((res) => {
-            console.log('Service got location:', res)
             return res;
         })
         .then((res) => {
@@ -36,5 +35,5 @@ function searchLocation(location) {
             return res.results[0].geometry.location
         })
 
-        .catch((err) => { console.log('Problem:', err) })
+    .catch((err) => { console.log('Problem:', err) })
 }
