@@ -1,28 +1,17 @@
 import { locationService } from './services/location-service.js'
 
-
-// export const mapController = {
-//     initMap,
-//     _connectGoogleApi,
-//     gGoogleMap
-// }
 const KEY = 'locations'
 
 var gIdCounter = 101
-
-locationService.getLocations()
-    .then(location => {
-    })
-
-
-// .then(location => console.log(location))
 
 
 var gGoogleMap;
 var userPos
 window.onload = () => {
     // renderPlaces()
-    initMap()
+    checkIfDataUrl()
+        .then(loc => initMap(loc.lat, loc.lng))
+        .catch(err => initMap())
         .then(() => {
             addMarker({ lat: 32.0749831, lng: 34.9120554 });
         })
@@ -34,7 +23,7 @@ window.onload = () => {
             return pos.coords
         })
 
-        .then(userPos => {
+    .then(userPos => {
             document.querySelector('.btn-2').addEventListener('click', () => {
                 panTo(userPos.latitude, userPos.longitude)
             })
@@ -43,15 +32,8 @@ window.onload = () => {
             console.log('err!!!', err);
         })
 
-
-
-    document.querySelector('.btn').addEventListener('click', (ev) => {
-        console.log('Aha!', ev.target);
-        panTo(60, 20);
-    })
-
-    document.querySelector('.search-bar').addEventListener('onkeyup', (ev) => {
-        if (ev.keyCode === 13) onSearchLocation()
+    document.querySelector('.search-bar').addEventListener('keyup', (ev) => {
+        if (ev.key === 'Enter') onSearchLocation()
     })
 
     document.querySelector('.search-btn').addEventListener('click', () => {
@@ -73,9 +55,9 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
         .then(() => {
             gGoogleMap = new google.maps.Map(
                 document.querySelector('#map'), {
-                center: { lat, lng },
-                zoom: 15
-            })
+                    center: { lat, lng },
+                    zoom: 15
+                })
             gGoogleMap.addListener('click', (ev) => {
                 const placeName = prompt('name that place')
                 const lat = ev.latLng.lat()
@@ -105,7 +87,7 @@ function renderPlaces() {
     var strHTMLs = places.map((place, idx) => `<li class="place-${idx}" style="cursor:pointer">${place.name}  <span >X</span></li> `)
     strHTMLs.unshift('<ul>')
     strHTMLs.push('</ul>')
-    // strHTML += `</ul>`
+        // strHTML += `</ul>`
     var userFavs = document.querySelector('.user-places')
     userFavs.innerHTML = strHTMLs.join('')
     renderListClicks(places)
@@ -113,7 +95,7 @@ function renderPlaces() {
 
 function renderListClicks(places) {
     console.log(places)
-    for (var i = 0; i < places.length;  i++) {
+    for (var i = 0; i < places.length; i++) {
         let idx = i
         document.querySelector(`.place-${i}`).addEventListener('click', (ev) => {
             console.log(idx)
@@ -178,4 +160,24 @@ function _connectGoogleApi() {
 function onSearchLocation() {
     var inputVal = document.querySelector('.search-bar').value
     locationService.searchLocation(inputVal)
+}
+
+function checkIfDataUrl() {
+    return new Promise((resolve, reject) => {
+        const lat = +getParameterByName('lat')
+        if (!lat) return reject()
+        const lng = +getParameterByName('lng')
+        return resolve({ lat, lng })
+    })
+
+
+}
+
+function getParameterByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
