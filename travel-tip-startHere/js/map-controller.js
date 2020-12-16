@@ -31,6 +31,14 @@ window.onload = () => {
         panTo(35.6895, 139.6917);
     })
 
+    document.querySelector('.search-bar').addEventListener('onkeyup', () => {
+        if (event.keyCode === 13) onSearchLocation()
+    })
+
+    document.querySelector('.search-btn').addEventListener('click', () => {
+        onSearchLocation()
+    })
+
 }
 
 
@@ -84,5 +92,21 @@ function _connectGoogleApi() {
         elGoogleApi.onerror = () => reject('Google script failed to load')
     })
 
-
 }
+
+
+function onSearchLocation() {
+    var inputVal = document.querySelector('.search-bar').value
+    locationService.searchLocation(inputVal)
+}
+
+
+// function searchLocation(location) {
+//     const API_KEY = 'AIzaSyDLZcYhiN4d0Vkk1Ku1BBGR7UFiXr-2t4Y'
+//     return fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=${API_KEY}`)
+//         .then((res) => res.json())
+//         .then((res) => {
+//             console.log('Service got location:', res);
+//         })
+//         .catch((err) => { console.log('Problem:', err) })
+// }
