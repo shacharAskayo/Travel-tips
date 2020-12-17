@@ -1,0 +1,128 @@
+    * {
+        box-sizing: border-box;
+    }
+    
+    @font-face {
+        font-family: dodko;
+        src: url(../fonts/EastSeaDokdo-Regular.ttf);
+    }
+    
+    @font-face {
+        font-family: play;
+        src: url(../fonts/PlayfairDisplay-Regular.ttf);
+    }
+    
+    @font-face {
+        font-family: ubuntu;
+        src: url(../fonts/Ubuntu-Regular.ttf);
+    }
+    
+    @font-face {
+        font-family: inconsolata;
+        src: url(../fonts/Inconsolata-Regular.ttf);
+    }
+    
+    body {
+        background-color: #e67017;
+        background-image: url("https://www.transparenttextures.com/patterns/otis-redding.png");
+        margin: 0;
+        text-align: center;
+    }
+    
+    button {
+        cursor: pointer;
+        border-radius: 5px;
+        border: none;
+        font-family: arial;
+    }
+    
+    button:hover {
+        border: 1px solid lemonchiffon;
+    }
+    
+    .main-layout {
+        max-width: 980px;
+        margin: 0 auto;
+    }
+    
+    .container {
+        display: flex;
+        justify-content: space-evenly;
+    }
+    
+    h1 {
+        color: rgb(24, 24, 24);
+        font-family: dodko;
+        font-size: 48px;
+        text-align: center;
+        margin-bottom: 50px;
+        width: 220px;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: rgba(255, 222, 173, 0.452);
+        border-radius: 7px;
+    }
+    
+    .map {
+        border-radius: 3px;
+        border: 2px solid lemonchiffon;
+    }
+    
+    .clean-list {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
+    
+    h2 {
+        text-align: left;
+        margin: 1px;
+        padding: 5px;
+        font-family: ubuntu;
+        margin-top: 20px;
+        background-color: rgba(255, 222, 173, 0.7);
+        border-radius: 5px;
+    }
+    
+    .search-bar {
+        padding: 10px 5px;
+        width: 250px;
+        background-color: rgb(245, 242, 221);
+        border: none;
+        border-radius: 3px;
+    }
+    
+    .search-bar:focus {
+        outline-color: lightgoldenrodyellow;
+    }
+    
+    .search-btn {
+        padding: 10px 5px;
+    }
+    
+    .btn-2 {
+        padding: 10px 5px;
+    }
+    
+    .btn-3 {
+        padding: 10px 5px;
+    }
+    
+    h3 {
+        font-family: ubuntu;
+    }
+    
+    .fav-places {
+        font-family: dodko;
+        font-size: 32px;
+        background-color: rgba(255, 222, 173, 0.452);
+        border-radius: 3px;
+        width: 400px;
+    }
+    
+    .x-btn {
+        border-radius: 50%;
+        font-family: ubuntu;
+        font-weight: bold;
+        background-color: lemonchiffon
+    }

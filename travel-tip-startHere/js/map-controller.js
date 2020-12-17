@@ -59,7 +59,7 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
                     zoom: 15
                 })
             gGoogleMap.addListener('click', (ev) => {
-                const placeName = prompt('name that place')
+                const placeName = prompt('Name that place')
                 if (!placeName) return
 
                 const lat = ev.latLng.lat()
@@ -87,7 +87,7 @@ function renderPlaces() {
         document.querySelector('.user-places').innerHTML = ''
         return
     }
-    var strHTMLs = places.map((place, idx) => `<li  style="cursor:pointer"> <span class="place-${idx}"> ${(place.name)} </span><span class="remove-${idx}"> X</span></li> `)
+    var strHTMLs = places.map((place, idx) => `<li  class="fav-places clean-list" style="cursor:pointer"> <span class="place-${idx}"> ${(place.name)} </span><button class="x-btn remove-${idx}">x</button></li> `)
     strHTMLs.unshift('<ul>')
     strHTMLs.push('</ul>')
     document.querySelector('.user-places').innerHTML = strHTMLs.join('')
